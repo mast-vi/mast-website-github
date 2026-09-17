@@ -1,0 +1,16 @@
+{
+  "name": "mast-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sito aziendale MAST con showroom 3D della dosatrice DM-40",
+  "scripts": {
+    "dev": "serve . -l 4173",
+    "check": "node scripts/check-links.mjs && node --check script.js && node --check showroom.js && node --input-type=module --check < showroom-3d.js"
+  },
+  "devDependencies": {
+    "serve": "^14.2.4"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

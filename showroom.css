@@ -1,0 +1,64 @@
+.showroom{position:relative;background:#dfe3e5;scroll-margin-top:0}
+.showroom-stage{position:relative;min-height:720px;overflow:hidden;isolation:isolate;background:#dfe3e5}
+.showroom-room,.showroom-webgl,.showroom-machines,.showroom-captions,.showroom-doors,.showroom-shade{position:absolute;inset:0}
+.showroom-room>img{height:100%;width:100%;object-fit:cover}
+.showroom-webgl{display:none;z-index:1;pointer-events:none}
+.showroom-webgl canvas{display:block;width:100%;height:100%}
+.showroom-shade{z-index:3;pointer-events:none;opacity:0;background:linear-gradient(270deg,#f2f4f3f5 0%,#f2f4f3ed 18%,#f2f4f399 33%,transparent 53%)}
+.showroom-captions{z-index:4;pointer-events:none}
+.showroom-caption{pointer-events:auto}
+.showroom-caption h3{font-size:clamp(3rem,5.5vw,6.1rem);line-height:.97;max-width:490px}
+.showroom-caption>p:not(.eyebrow){font-size:1rem;line-height:1.6;margin:1.2rem 0 1.5rem;max-width:370px}
+.showroom-caption .eyebrow,.showroom-heading .eyebrow{font-size:.875rem}
+.showroom-caption .button{font-size:.875rem;min-height:48px;align-items:center}
+.showroom-heading{z-index:7;pointer-events:none}
+.showroom-heading h2{font-size:clamp(2.3rem,4vw,4rem)}
+.showroom-doors{display:none;z-index:6;pointer-events:none;transform-origin:50% 50%}
+.showroom-door{position:absolute;inset:0;background:url('assets/showroom-door.webp') center/cover no-repeat}
+.showroom-door-left{clip-path:inset(0 50% 0 0)}
+.showroom-door-right{clip-path:inset(0 0 0 50%)}
+.showroom-entry{position:absolute;left:50%;top:49%;width:min(420px,65vw);transform:translate(-50%,-50%);text-align:center;color:var(--navy)}
+.showroom-entry img{width:100%;filter:drop-shadow(0 2px 1px #ffffff70)}
+.showroom-entry p{font:500 clamp(1.5rem,2.3vw,2.2rem) var(--display);text-transform:uppercase;margin:1.5rem 0 .5rem}
+.showroom-entry span{display:inline-block;font-size:clamp(1.1rem,1.8vw,1.45rem);font-weight:600;letter-spacing:.065em;text-transform:uppercase;text-shadow:0 1px 0 #fff}
+.showroom-skip{position:absolute;z-index:8;right:var(--pad);bottom:20px;font-size:.875rem;padding:.65rem .9rem;background:#f2f4f3eb;border:1px solid #071b2f30;min-height:44px}
+.showroom-skip:focus-visible,.showroom-caption a:focus-visible{outline:3px solid var(--orange);outline-offset:5px}
+.showroom-progress{position:absolute;z-index:8;bottom:0;left:0;right:0;height:4px;background:#071b2f26;display:none}
+.showroom-progress span{display:block;height:100%;background:var(--orange);transform-origin:left;transform:scaleX(0)}
+.showroom-noscript{position:relative;z-index:9;padding:1rem;background:var(--navy);color:white}
+/* Original product photograph remains the fallback, including without WebGL. */
+.showroom:not(.has-3d) .showroom-stage{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center;padding:140px var(--pad) 90px}
+.showroom:not(.has-3d) .showroom-heading{position:relative;grid-column:1/-1;order:0}
+.showroom:not(.has-3d) .showroom-machines,.showroom:not(.has-3d) .showroom-captions{display:contents}
+.showroom:not(.has-3d) .showroom-machine{position:relative;width:100%;height:440px;margin:0;z-index:4}
+.showroom-machine img{height:100%;width:100%;object-fit:contain}
+.showroom:not(.has-3d) .showroom-caption{position:relative;z-index:4;background:#f2f4f3ef;padding:1.5rem}
+.showroom.has-3d .showroom-stage{height:100svh;min-height:580px}
+.showroom.has-3d .showroom-webgl{display:block}
+.showroom.has-3d .showroom-room,.showroom.has-3d .showroom-machines{display:none}
+.showroom.has-3d .showroom-heading{position:absolute;left:var(--pad);top:110px}
+.showroom.has-3d .showroom-caption{position:absolute;right:var(--pad);top:50%;width:34%;max-width:480px;transform:translateY(-35%)}
+.showroom.has-motion .showroom-doors,.showroom.has-motion .showroom-progress{display:block}
+.showroom.reduced-scene .showroom-shade{opacity:1}
+@media(max-width:700px){
+ .showroom.has-3d .showroom-stage{min-height:640px}
+ .showroom-heading h2{font-size:2.5rem;max-width:260px}
+ .showroom-entry{width:72vw}
+ .showroom-skip{font-size:.875rem;right:20px;bottom:16px}
+ .showroom-shade{background:linear-gradient(0deg,#f2f4f3 0%,#f2f4f3fa 22%,#f2f4f380 37%,transparent 49%)}
+ .showroom.has-3d .showroom-caption{left:20px;right:20px;top:auto;bottom:78px;width:auto;max-width:none;transform:none}
+ .showroom-caption h3{font-size:2.7rem}
+ .showroom-caption .eyebrow{margin-bottom:.4rem}
+ .showroom-caption>p:not(.eyebrow){font-size:1rem;line-height:1.45;margin:.65rem 0 .9rem}
+ .showroom-caption .button{font-size:.875rem;padding:.75rem 1rem}
+ .showroom:not(.has-3d) .showroom-stage{grid-template-columns:1fr;gap:1rem;padding:110px 20px 90px}
+ .showroom:not(.has-3d) .showroom-machine{height:330px}
+}
+@media(max-width:700px) and (max-height:740px){.showroom.has-3d .showroom-caption>p:not(.eyebrow){display:none}.showroom.has-3d .showroom-caption h3{margin-bottom:1rem}}
+
+/* First paint matches the 3D entrance, even while the engine/model load. */
+.showroom.is-loading .showroom-stage{display:block;padding:0;height:100svh;min-height:580px}
+.showroom.is-loading .showroom-doors{display:block}
+.showroom.is-loading .showroom-room,.showroom.is-loading .showroom-machines,.showroom.is-loading .showroom-captions{display:none}
+.showroom.is-loading .showroom-heading{position:absolute;left:var(--pad);top:110px}
+@media(max-width:700px){.showroom.is-loading .showroom-stage{min-height:640px}}

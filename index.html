@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MAST | Ingegneria e macchinari per l'industria alimentare</title>
+  <meta name="description" content="MAST progetta, costruisce e installa macchinari alimentari e gestisce progetti industriali completi, dal concept alla messa in servizio.">
+  <meta name="theme-color" content="#071b2f"><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23071b2f'/%3E%3Cpath d='M13 14v36l10-7V21zm14 4v28l10-7V25zm14 4v20l10-7v-6z' fill='%23d55435'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="showroom.css?v=13"><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"}}</script><script src="script.js" defer></script><script src="assets/vendor/gsap.min.js" defer></script><script src="assets/vendor/ScrollTrigger.min.js" defer></script><script src="showroom.js?v=13" defer></script>
+</head>
+<body>
+  <a class="skip" href="#contenuto">Vai al contenuto</a>
+  <header class="site-header" data-header>
+    <a class="brand" href="#top" aria-label="MAST, torna all'inizio"><img src="assets/mast-logo.svg" alt="MAST - Macchinari automatici e soluzioni tecnologiche"></a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-nav" data-menu><span></span><span></span><span></span><span class="sr-only">Menu</span></button>
+    <nav id="main-nav" class="main-nav" aria-label="Navigazione principale"><a href="#chi-siamo">Chi siamo</a><a href="#servizi">Servizi</a><a href="#macchinari">Macchinari</a><a href="#contatti">Contatti</a></nav>
+  </header>
+  <main id="contenuto">
+    <section class="home-hero" id="top">
+      <div class="hero-lines" aria-hidden="true"></div>
+      <div class="home-hero-copy reveal">
+        <p class="eyebrow">Carrè · Vicenza · Italia</p><h1>Ingegneria che<br><span>muove il futuro</span><br>alimentare.</h1>
+        <p>Progettiamo e costruiamo macchinari, integriamo tecnologie e governiamo ogni fase del progetto industriale.</p>
+        <div class="hero-actions"><a class="button button-primary" href="#chi-siamo">Conosci MAST</a><a class="button button-line" href="#contatti">Parliamo del tuo progetto</a></div>
+      </div>
+      <div class="home-hero-image reveal" data-delay="1"><img src="assets/dm40-lab.webp" alt="Soluzione MAST installata in un laboratorio alimentare" width="896" height="1152"><span class="image-label">Soluzioni tecnologiche<br>per la produzione</span></div>
+      <div class="hero-index" aria-hidden="true"><span>01</span><i></i><span>MAST</span></div>
+    </section>
+    <section class="identity compact-section" id="chi-siamo">
+      <p class="section-kicker reveal">Chi siamo</p>
+      <div class="identity-grid"><h2 class="reveal">Un partner unico,<br>dall'idea alla produzione.</h2><div class="identity-copy reveal"><p class="lead">MAST nasce a Carrè, nel cuore industriale del Veneto, per trasformare esigenze produttive complesse in soluzioni concrete.</p><p>Affianchiamo aziende alimentari e laboratori con competenze di progettazione, costruzione e project management. Analizziamo il processo, sviluppiamo la tecnologia e seguiamo l'integrazione fino all'avviamento.</p></div></div>
+      <div class="values reveal"><div><strong>01</strong><span>Ascolto del processo</span></div><div><strong>02</strong><span>Progettazione su misura</span></div><div><strong>03</strong><span>Presenza fino all'avviamento</span></div></div>
+    </section>
+    <section class="services compact-section" id="servizi">
+      <div class="section-title reveal"><p class="eyebrow">Competenze integrate</p><h2>Dal concept<br>alla consegna.</h2></div>
+      <div class="service-grid">
+        <article class="service-card reveal"><span>01</span><h3>Progettazione macchinari</h3><p>Dallo studio di fattibilità alla progettazione esecutiva, sviluppiamo soluzioni costruite attorno al processo produttivo.</p></article>
+        <article class="service-card reveal" data-delay="1"><span>02</span><h3>Costruzione e installazione</h3><p>Realizziamo macchinari robusti, ne curiamo l'installazione e l'integrazione nell'impianto esistente.</p></article>
+        <article class="service-card reveal"><span>03</span><h3>Project management</h3><p>Coordiniamo concept, fornitori, tempi, qualità e messa in servizio con un unico riferimento tecnico.</p></article>
+        <article class="service-card reveal" data-delay="1"><span>04</span><h3>Consulenza tecnica</h3><p>Analizziamo processi e macchine esistenti per individuare soluzioni di efficientamento e automazione.</p></article>
+      </div>
+    </section>
+    <section class="process-band" aria-label="Metodo di lavoro"><div class="process-word" aria-hidden="true">ANALISI · PROGETTO · COSTRUZIONE · AVVIAMENTO ·</div><ol class="process-steps"><li><span>01</span>Esigenza</li><li><span>02</span>Soluzione</li><li><span>03</span>Realizzazione</li><li><span>04</span>Risultato</li></ol></section>
+    <section class="showroom is-loading" aria-busy="true" id="macchinari" aria-labelledby="showroom-title">
+      <div class="showroom-stage">
+        <div class="showroom-room" aria-hidden="true"><img src="assets/room-back.webp" alt="" width="1672" height="940"></div>
+        <div class="showroom-webgl" aria-label="Laboratorio tridimensionale con dosatrice DM40" role="img"></div><div class="showroom-machines" data-showroom-machines></div>
+        <div class="showroom-shade" aria-hidden="true"></div>
+        <div class="showroom-captions" data-showroom-captions></div>
+        <div class="showroom-doors" aria-hidden="true">
+          <div class="showroom-door showroom-door-left"></div><div class="showroom-door showroom-door-right"></div>
+          <div class="showroom-entry"><img src="assets/mast-logo.svg" alt="" width="420"><p>Entra nel laboratorio</p><span data-entry-hint>Scorri per entrare nel laboratorio ↓</span></div>
+        </div>
+        <div class="showroom-heading"><p class="eyebrow">Macchinari MAST</p><h2 id="showroom-title">Dentro la produzione.</h2></div>
+        <a class="showroom-skip" href="macchinari/dm-40/">Vai direttamente alla DM-40 ↗</a>
+        <div class="showroom-progress" aria-hidden="true"><span></span></div>
+        <noscript><style>.showroom.is-loading .showroom-doors{display:none}.showroom.is-loading .showroom-noscript{display:block}</style><a class="showroom-noscript" href="macchinari/dm-40/">Dosatrice DM-40 — Vai alla scheda macchina ↗</a></noscript>
+      </div>
+    </section>
+    <section class="contact compact-section" id="contatti"><div class="contact-inner reveal"><p class="eyebrow">Il prossimo progetto</p><h2>Partiamo dalla tua<br>esigenza produttiva.</h2><a class="contact-mail" href="mailto:info@mast-vi.it">info@mast-vi.it <span>↗</span></a><div class="contact-meta"><span>Via Fondovilla 59</span><span>36010 Carrè (VI) · Italia</span></div></div></section>
+  </main>
+  <footer><img src="assets/mast-logo.svg" alt="MAST" width="280"><p>Macchinari automatici e soluzioni tecnologiche.</p><p>© <span data-year></span> MAST</p></footer>
+</body>
+</html>
