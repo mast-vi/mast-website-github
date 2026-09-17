@@ -6,7 +6,7 @@
     description:'Dal liquido agli impasti più corposi. Un dosaggio delicato, anche con prodotti montati e particelle solide.',
     image:'assets/dm40-new.png', model:'assets/dm40.glb', href:'macchinari/dm-40/',
     side:'left', position:[-3.4,0,-1.5], height:1.65,
-    correctionX:-Math.atan2(.686498629,.727131097), rotationY:.38 }];
+    correctionX:-Math.atan2(.686498629,.727131097), rotationY:1 }]; //rotationY:.38
   const captions = machines.map((m,i) => {
     const figure=document.createElement('figure'); figure.className='showroom-machine'; figure.style.order=i*2+1;
     const img=new Image();img.src=m.image;img.alt=m.name;figure.append(img);
