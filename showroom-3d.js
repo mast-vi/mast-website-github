@@ -2,13 +2,39 @@ import * as THREE from 'three';
 import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/loaders/GLTFLoader.js';
 import {RoomEnvironment} from 'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/environments/RoomEnvironment.js';
 
+// Generatore procedurale della micro-granulosità tipica della micropallinatura con microsfere
+function createBeadBlastedTexture() {
+  const size = 256;
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  const imgData = ctx.createImageData(size, size);
+
+  for (let i = 0; i < imgData.data.length; i += 4) {
+    // Genera perturbazioni microscopiche (vettore normale RGB) per simulare l'impatto delle microsfere
+    const nx = Math.floor(128 + (Math.random() - 0.5) * 45);
+    const ny = Math.floor(128 + (Math.random() - 0.5) * 45);
+    imgData.data[i] = nx;
+    imgData.data[i + 1] = ny;
+    imgData.data[i + 2] = 255;
+    imgData.data[i + 3] = 255;
+  }
+  ctx.putImageData(imgData, 0, 0);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(40, 40); // Frequenza fitta per micro-granuli realistici
+  return texture;
+}
+
 export async function createShowroom(section,machines,captions){
   const stage=section.querySelector('.showroom-stage'),host=section.querySelector('.showroom-webgl');
   const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
   renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
   renderer.outputColorSpace=THREE.SRGBColorSpace;
   renderer.toneMapping=THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure=0.95;
+  renderer.toneMappingExposure=1.0;
   renderer.shadowMap.enabled=true;
   renderer.shadowMap.type=THREE.PCFSoftShadowMap;
   host.append(renderer.domElement);
@@ -40,12 +66,11 @@ export async function createShowroom(section,machines,captions){
   plane(12,20,crop(back,.15,.02,.70,.31),[0,0,-2],[-Math.PI/2,0,0]);
   plane(12,20,crop(back,.14,.79,.72,.21),[0,5,-2],[Math.PI/2,0,0]);
 
-  // Ombra a terra morbida
   const shadow=new THREE.Mesh(new THREE.PlaneGeometry(12,20),new THREE.ShadowMaterial({opacity:.25}));
   shadow.rotation.x=-Math.PI/2;shadow.position.set(0,.006,-2);shadow.receiveShadow=true;scene.add(shadow);
 
-  // Luci della scena
-  scene.add(new THREE.HemisphereLight(0xffffff,0x7d858c,.6));
+  // Luci calibrate per esaltare le superfici micropallinate (morbide e graduate)
+  scene.add(new THREE.HemisphereLight(0xffffff,0x7d858c,.65));
   const key=new THREE.DirectionalLight(0xffffff,1.3);
   key.position.set(-3,4.6,4);
   key.castShadow=true;
@@ -56,95 +81,4 @@ export async function createShowroom(section,machines,captions){
   key.target.position.set(-3,0,-2);
   scene.add(key,key.target);
 
-  const fill=new THREE.DirectionalLight(0xeaf2ff,.4);fill.position.set(5,4,-4);scene.add(fill);
-  const rim=new THREE.DirectionalLight(0xfff2dc,.25);rim.position.set(-5,3,-5);scene.add(rim);
-
-  // Generatore di riflessi da studio HDR (fondamentale per dare lucentezza e contrasto all'acciaio inox)
-  const pmrem=new THREE.PMREMGenerator(renderer);
-  pmrem.compileEquirectangularShader();
-  const roomEnv=new RoomEnvironment();
-  scene.environment=pmrem.fromScene(roomEnv,0.04).texture;
-  pmrem.dispose();
-  roomEnv.dispose();
-
-  const adjustedMaterials=new Set();
-  machines.forEach((m,i)=>{
-    const content=assets[i+3].scene;content.rotation.x=m.correctionX??0;content.updateMatrixWorld(true);
-    let bounds=new THREE.Box3().setFromObject(content);
-    content.scale.setScalar(m.height/bounds.getSize(new THREE.Vector3()).y);content.updateMatrixWorld(true);
-    bounds=new THREE.Box3().setFromObject(content);const center=bounds.getCenter(new THREE.Vector3());
-    content.position.set(-center.x,-bounds.min.y,-center.z);
-
-    content.traverse(o=>{
-      if(!o.isMesh)return;
-      o.castShadow=true;o.receiveShadow=true;
-      (Array.isArray(o.material)?o.material:[o.material]).forEach(mat=>{
-        if(adjustedMaterials.has(mat))return;
-        adjustedMaterials.add(mat);
-
-        const hsl={};
-        if(mat.color)mat.color.getHSL(hsl);
-
-        // Identifica solo i metalli (grigi neutri o parti chiamate AISI / Acciaio)
-        const namedMetal=/AISI|ACCIAIO|MICROPALLINATURA|SemiPolished|AL6082|ZINCATURA|\bSB\b/i.test(mat.name);
-        const neutralMetal=mat.color&&hsl.s<.10&&hsl.l>.15&&hsl.l<.92&&!/NERO|SmoothBlack|NBR|BIANCO|Default/i.test(mat.name);
-
-        if(namedMetal||neutralMetal){
-          if(mat.isMeshStandardMaterial||mat.isMeshPhysicalMaterial){
-            // Impostazioni per Acciaio Inox satinato alimentare
-            mat.metalness=0.96;
-            mat.roughness=/MICROPALLINATURA/i.test(mat.name)?0.42:0.22;
-            mat.envMapIntensity=1.4; // Massima reattività ai riflessi di luce
-          }
-          if(mat.color){
-            // Tonalità argentata luminosa (evita il grigio topo scuro)
-            mat.color.setRGB(0.88, 0.89, 0.91);
-          }
-        }
-        // I colori originali (il blu originale, il rosso delle ruote, il display verde) non vengono toccati.
-        mat.needsUpdate=true;
-      });
-    });
-
-    const group=new THREE.Group();group.add(content);group.position.set(...m.position);group.rotation.y=m.rotationY??0;scene.add(group);
-  });
-
-  const pose={x:0,y:1.7,z:9.8,tx:0,ty:1.6,tz:-10},aim=new THREE.Vector3();let frame=0;
-  const draw=()=>{frame=0;camera.position.set(pose.x,pose.y,pose.z);aim.set(pose.tx,pose.ty,pose.tz);camera.lookAt(aim);renderer.render(scene,camera);};
-  const requestDraw=()=>{if(!frame)frame=requestAnimationFrame(draw);};
-  const resize=()=>{const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;
-    renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=w<701?62:53;camera.updateProjectionMatrix();requestDraw();};
-
-  section.classList.add('has-3d');gsap.registerPlugin(ScrollTrigger);
-  const media=gsap.matchMedia();
-  media.add({mobile:'(max-width: 700px)',desktop:'(min-width: 701px)',reduced:'(prefers-reduced-motion: reduce)'},context=>{
-    const {mobile,reduced}=context.conditions;
-    const finalPose=m=>{const p=m.position,side=m.side==='left'?-1:1;
-      return {x:p[0]-side*(mobile?1.8:1.5),y:mobile?1.55:1.35,z:p[2]+(mobile?2.8:2.5),
-        tx:p[0]-side*(mobile?.05:.67),ty:mobile?.2:.95,tz:p[2]};};
-    if(reduced){Object.assign(pose,finalPose(machines[0]));section.classList.add('reduced-scene');resize();return()=>section.classList.remove('reduced-scene');}
-    section.classList.add('has-motion');Object.assign(pose,{x:0,y:1.7,z:9.8,tx:0,ty:1.6,tz:-10});
-    gsap.set(captions,{autoAlpha:0,y:20});captions.forEach(c=>{c.inert=true;});
-    const doors=section.querySelector('.showroom-doors');
-    const timeline=gsap.timeline({defaults:{ease:'none'},onUpdate:()=>{requestDraw();captions.forEach(c=>{c.inert=Number(gsap.getProperty(c,'opacity'))<.85;});},
-      scrollTrigger:{trigger:section,pin:stage,start:'top top',end:()=>`+=${innerHeight*(2.2+machines.length*1.8)}`,scrub:mobile?.45:.65,anticipatePin:1,invalidateOnRefresh:true}});
-    timeline.to(section.querySelector('.showroom-entry'),{autoAlpha:0,duration:.25},.04)
-      .to(section.querySelector('.showroom-door-left'),{xPercent:-55,duration:1.05,ease:'power1.inOut'},.08)
-      .to(section.querySelector('.showroom-door-right'),{xPercent:55,duration:1.05,ease:'power1.inOut'},.08)
-      .to(doors,{scale:1.25,duration:1.3},.2).to(doors,{autoAlpha:0,duration:.2},1.15)
-      .to(section.querySelector('.showroom-heading'),{autoAlpha:0,duration:.3},.6)
-      .to(pose,{z:5.2,tx:machines[0].position[0]*.28,ty:1.2,duration:1.2,ease:'power1.inOut'},.25);
-    machines.forEach((m,i)=>{const start=1.45+i*3;
-      if(i)timeline.to(captions[i-1],{autoAlpha:0,y:20,duration:.25},start-.25);
-      timeline.to(pose,{...finalPose(m),duration:1.85,ease:'power1.inOut'},start)
-        .to(captions[i],{autoAlpha:1,y:0,duration:.4},start+1.7)
-        .to(section.querySelector('.showroom-shade'),{opacity:1,duration:.4},start+1.65)
-        .to({},{duration:.75},start+2.1);});
-    timeline.fromTo(section.querySelector('.showroom-progress span'),{scaleX:0},{scaleX:1,duration:timeline.duration()},0);resize();
-    return()=>{section.classList.remove('has-motion');captions.forEach(c=>{c.inert=false;});};
-  });
-  const observer=new ResizeObserver(resize);observer.observe(host);
-  renderer.domElement.addEventListener('webglcontextlost',event=>{event.preventDefault();media.revert();section.classList.remove('has-3d','has-motion');observer.disconnect();});
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)requestDraw();});
-  resize();draw();ScrollTrigger.refresh();document.fonts?.ready.then(()=>ScrollTrigger.refresh());
-}
+  const fill=new THREE.Dir
